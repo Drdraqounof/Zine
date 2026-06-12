@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equal Rights Zine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #1a1a2e;
+    --cream: #f5f0e8;
+    --fuchsia: #e0165a;
+    --gold: #f5a623;
+    --teal: #00b4a6;
+    --lavender: #b8a9d9;
+    --page-w: 100vw;
+  }
+
+  body {
+    background: #2a2a2a;
+    font-family: 'Space Grotesk', sans-serif;
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+  }
+
+  .page-label {
+    display: none;
+  }
+
+  .page {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    background: var(--ink);
+    padding: 0;
+  }
+
+  .cover-stripe {
+    height: 8px;
+    background: repeating-linear-gradient(90deg, var(--fuchsia) 0 80px, var(--gold) 80px 160px, var(--teal) 160px 240px, var(--lavender) 240px 320px, var(--fuchsia) 320px 400px, var(--gold) 400px 480px, var(--teal) 480px 560px, var(--lavender) 560px 640px, var(--fuchsia) 640px 680px);
+  }
+
+  .cover-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 28px 48px;
+    position: relative;
+  }
+
+  .cover-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--teal);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .cover-fist {
+    font-size: 80px;
+    line-height: 1;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 24px rgba(224,22,90,0.5));
+  }
+
+  .cover-headline {
+    font-family: 'Syne', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 0.92;
+    color: var(--cream);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .cover-headline .hl-fuchsia { color: var(--fuchsia); }
+  .cover-headline .hl-gold { color: var(--gold); }
+  .cover-headline .hl-teal { color: var(--teal); }
+
+  .cover-three {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .cover-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    width: fit-content;
+  }
+
+  .cover-pill.ep { background: var(--fuchsia); color: #fff; }
+  .cover-pill.wr { background: var(--gold); color: var(--ink); }
+  .cover-pill.rr { background: var(--teal); color: var(--ink); }
+
+  .cover-tagline {
+    font-size: 13px;
+    color: #888;
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.5;
+    border-top: 1px solid #333;
+    padding-top: 16px;
+  }
+
+  .cover-issue {
+    position: absolute;
+    bottom: 28px;
+    right: 48px;
+    text-align: right;
+  }
+
+  .cover-issue span {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #555;
+    text-transform: uppercase;
+  }
+
+  .cover-issue strong {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    color: var(--lavender);
+    display: block;
+    line-height: 1;
+  }
+
+  /* ─── OPENING / FAQ PAGE ─── */
+  .faq-page {
+    background: var(--cream);
+    padding: 32px 48px;
+    justify-content: center;
+  }
+
+  .section-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .eyebrow-pink { color: var(--fuchsia); }
+  .eyebrow-gold { color: #b57a00; }
+  .eyebrow-teal { color: #007a72; }
+
+  .faq-header {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    border-bottom: 4px solid var(--ink);
+    padding-bottom: 12px;
+  }
+
+  .faq-block {
+    margin-bottom: 20px;
+    padding-left: 16px;
+  }
+
+  .faq-block.pink { border-left: 3px solid var(--fuchsia); }
+  .faq-block.gold { border-left: 3px solid var(--gold); }
+  .faq-block.teal { border-left: 3px solid var(--teal); }
+
+  .faq-q {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .faq-a {
+    font-size: 12px;
+    color: #3a3a4a;
+    line-height: 1.6;
+  }
+
+  .faq-list {
+    margin-top: 6px;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .faq-list li {
+    font-size: 11px;
+    color: #3a3a4a;
+    display: flex;
+    gap: 8px;
+    line-height: 1.5;
+  }
+
+  .faq-list li::before {
+    content: '\25B8';
+    flex-shrink: 0;
+    color: var(--fuchsia);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .faq-law-box {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 12px 16px;
+    margin-top: 10px;
+    border-radius: 2px;
+  }
+
+  .faq-law-box .law-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .faq-law-box p {
+    font-size: 11px;
+    line-height: 1.55;
+    color: #ccc;
+  }
+
+  /* ─── STORY PAGES ─── */
+  .story-page {
+    padding: 0;
+  }
+
+  .story-header {
+    padding: 20px 48px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .story-chap {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .story-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--cream);
+  }
+
+  .theme-fuchsia .story-header { background: var(--fuchsia); }
+  .theme-fuchsia .story-chap { color: rgba(255,255,255,0.6); }
+  .theme-fuchsia .story-title { color: #fff; }
+
+  .theme-gold .story-header { background: var(--gold); }
+  .theme-gold .story-chap { color: rgba(26,26,46,0.6); }
+  .theme-gold .story-title { color: var(--ink); }
+
+  .theme-teal .story-header { background: var(--teal); }
+  .theme-teal .story-chap { color: rgba(26,26,46,0.6); }
+  .theme-teal .story-title { color: var(--ink); }
+
+  .theme-lavender .story-header { background: var(--lavender); }
+  .theme-lavender .story-chap { color: rgba(26,26,46,0.6); }
+  .theme-lavender .story-title { color: var(--ink); }
+
+  .theme-ink .story-header { background: var(--ink); }
+  .theme-ink .story-chap { color: rgba(255,255,255,0.5); }
+  .theme-ink .story-title { color: var(--cream); }
+
+  .story-body {
+    background: #fff;
+    flex: 1;
+    padding: 20px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+  }
+
+  .scene-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .scene-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  .scene-text {
+    font-size: 15px;
+    color: #222;
+    line-height: 1.65;
+  }
+
+  .dialogue {
+    background: #f7f7f7;
+    border-left: 3px solid var(--fuchsia);
+    padding: 10px 14px;
+    font-style: italic;
+    font-size: 12px;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .dialogue .speaker {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--fuchsia);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .callout-box {
+    border: 2px solid;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .callout-box .cb-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .callout-box .cb-body {
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  .callout-box.pink { border-color: var(--fuchsia); }
+  .callout-box.pink .cb-title { color: var(--fuchsia); }
+
+  .callout-box.gold { border-color: var(--gold); background: #fffbf0; }
+  .callout-box.gold .cb-title { color: #9a6f00; }
+
+  .callout-box.teal { border-color: var(--teal); background: #f0fdfc; }
+  .callout-box.teal .cb-title { color: #007a72; }
+
+  .stat-bar {
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-bar .stat-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+
+  .stat-bar .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--fuchsia);
+    line-height: 1;
+  }
+
+  .stat-bar .stat-desc {
+    font-size: 11px;
+    color: #bbb;
+    line-height: 1.45;
+  }
+
+  /* ─── BACK COVER ─── */
+  .back-cover {
+    background: var(--ink);
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .back-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .back-title span { color: var(--fuchsia); }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .resource-card {
+    padding: 14px;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .resource-card.fc { background: var(--fuchsia); }
+  .resource-card.gc { background: var(--gold); }
+  .resource-card.tc { background: var(--teal); }
+  .resource-card.lc { background: var(--lavender); }
+
+  .rc-icon { font-size: 22px; }
+
+  .rc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .resource-card.fc .rc-title { color: #fff; }
+
+  .rc-body {
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(26,26,46,0.8);
+  }
+
+  .resource-card.fc .rc-body { color: rgba(255,255,255,0.85); }
+
+  .back-mantra {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--cream);
+    text-transform: uppercase;
+    line-height: 1.15;
+    border-top: 2px solid #333;
+    padding-top: 20px;
+  }
+
+  .back-mantra span { color: var(--teal); }
+
+  .back-footer {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  .divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--fuchsia), var(--gold), var(--teal), var(--lavender));
+  }
+
+  @media print {
+    body { background: white; }
+    .page { page-break-after: always; }
+    .page-label { display: none; }
+  }
+
+  @media (max-width: 720px) {
+    .cover-headline { font-size: 36px; }
+    .cover-three { flex-wrap: wrap; }
+    .cover-body { padding: 20px 24px; }
+    .story-body { padding: 16px 24px; }
+    .story-header { padding: 16px 24px; }
+    .story-title { font-size: 28px; }
+    .faq-page { padding: 24px; }
+    .faq-header { font-size: 28px; }
+    .resource-grid { grid-template-columns: 1fr; }
+    .back-cover { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-stripe"></div>
+  <div class="cover-body">
+    <div class="cover-eyebrow">Issue No. 01 · Know Your Rights</div>
+    <div class="cover-fist">✊</div>
+    <h1 class="cover-headline">
+      <span class="hl-fuchsia">Equal</span><br>
+      <span class="hl-gold">Pay.</span><br>
+      <span class="hl-teal">Women's</span><br>
+      Rights.<br>
+      <span class="hl-lavender">Race</span><br>
+      Rights.
+    </h1>
+    <div class="cover-three">
+      <div class="cover-pill ep">💰 Equal Pay Rights</div>
+      <div class="cover-pill wr">♀ Women's Rights</div>
+      <div class="cover-pill rr">◑ Race Rights</div>
+    </div>
+    <p class="cover-tagline">
+      Your rights. Your laws. Your power.<br>
+      A zine for workers done being underpaid and overlooked.
+    </p>
+    <div class="cover-issue">
+      <span>Page count</span>
+      <strong>6</strong>
+    </div>
+  </div>
+  <div class="cover-stripe"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPENING PAGE — What Are Your Rights?
+══════════════════════════════════════════ -->
+<div class="page faq-page">
+  <div class="section-eyebrow eyebrow-pink">Before We Begin</div>
+  <h2 class="faq-header">Know Your<br>Rights</h2>
+
+  <div class="faq-block pink">
+    <div class="faq-q">What is Equal Pay?</div>
+    <div class="faq-a">
+      Equal pay means the same compensation for the same job, regardless of gender, race, or identity.
+    </div>
+    <ul class="faq-list">
+      <li>The <strong>Equal Pay Act of 1963</strong> prohibits paying women less than men for equal work at the same company.</li>
+      <li>Title VII of the <strong>Civil Rights Act of 1964</strong> also prohibits wage discrimination based on race, color, religion, sex, or national origin.</li>
+      <li>Many states have pay transparency laws and salary history bans that go beyond federal protections.</li>
+    </ul>
+    <div class="faq-law-box">
+      <div class="law-title">💡 Key Law</div>
+      <p>The Equal Pay Act requires equal pay for "substantially equal" work. You don't need the same job title — just similar responsibilities and skill requirements.</p>
+    </div>
+  </div>
+
+  <div class="faq-block gold">
+    <div class="faq-q">What Are Women's Rights at Work?</div>
+    <ul class="faq-list">
+      <li>You cannot be fired, demoted, or passed over because of your gender.</li>
+      <li>Pregnancy discrimination is illegal under the <strong>Pregnancy Discrimination Act</strong>.</li>
+      <li>Sexual harassment is a form of sex discrimination and is illegal under Title VII.</li>
+      <li>Retaliation for reporting discrimination is itself illegal.</li>
+    </ul>
+  </div>
+
+  <div class="faq-block teal">
+    <div class="faq-q">Race Discrimination Rights</div>
+    <ul class="faq-list">
+      <li>Title VII prohibits discrimination based on race, color, or national origin in hiring, firing, promotions, and pay.</li>
+      <li>File complaints with the <strong>EEOC</strong> — the federal agency that enforces these laws.</li>
+      <li>Hostile work environments based on race are illegal — slurs, derogatory comments, and race-based harassment all qualify.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     STORY PAGE 1 — The Meeting
+══════════════════════════════════════════ -->
+<div class="page story-page theme-fuchsia">
+  <div class="story-header">
+    <div class="story-chap">Maya's Story · Chapter 1</div>
+    <div class="story-title">The Number<br>She Wasn't<br>Supposed to See</div>
+  </div>
+  <div class="story-body">
+    <div class="scene-block">
+      <div class="scene-label">Scene · Conference Room B · Tuesday 10am</div>
+      <div class="scene-text">
+        Maya had been a software developer at Nexum Technologies for three years. Two months ago she'd quietly led a cloud migration that saved the company $400,000 annually.
+      </div>
+    </div>
+    <div class="scene-text">
+      The shared drive folder was mislabeled. Instead of meeting notes, she found a salary spreadsheet — all five developers on her team with their compensation.
+    </div>
+    <div class="stat-bar">
+      <div class="stat-eyebrow">What Maya Discovered</div>
+      <div class="stat-num">$25,000</div>
+      <div class="stat-desc">Less per year than her male colleagues with the same title and start date.</div>
+    </div>
+    <div class="scene-text">
+      Four names above hers. Same title: Senior Software Developer. All white men. She is a Black woman. The gap sat at the intersection of race and sex discrimination.
+    </div>
+    <div class="dialogue">
+      <span class="speaker">Maya, to herself</span>
+      "Same job, same title, same company. So why is this number so different?"
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     STORY PAGE 2 — Gathering Evidence
+══════════════════════════════════════════ -->
+<div class="page story-page theme-gold">
+  <div class="story-header">
+    <div class="story-chap">Maya's Story · Chapter 2</div>
+    <div class="story-title">She Didn't<br>React. She<br>Prepared.</div>
+  </div>
+  <div class="story-body">
+    <div class="scene-block">
+      <div class="scene-label">Scene · Maya's Home · That Evening</div>
+      <div class="scene-text">
+        Maya knew better than to storm into HR with nothing but anger. She built her case methodically, with documentation.
+      </div>
+    </div>
+    <div class="callout-box gold">
+      <div class="cb-title">📁 Her Documentation</div>
+      <div class="cb-body">
+        Screenshot of the salary spreadsheet (saved off company devices) · Three years of "Exceeds Expectations" reviews · Emails crediting her cloud migration · Original offer letter · Written promotion timeline
+      </div>
+    </div>
+    <div class="scene-text">
+      She also discovered her city had a <strong>Pay Transparency Ordinance</strong> — employees had the right to discuss wages, and Nexum was required to post salary ranges. They had not been doing this.
+    </div>
+    <div class="callout-box teal">
+      <div class="cb-title">⚖️ Laws That Applied</div>
+      <div class="cb-body">
+        <strong>Federal:</strong> Equal Pay Act (1963), Title VII (1964)<br>
+        <strong>City:</strong> Pay Transparency Ordinance, Ban on Salary History<br>
+        <strong>State:</strong> Equal Pay Act covering race and ethnicity
+      </div>
+    </div>
+    <div class="dialogue">
+      <span class="speaker">Maya</span>
+      "I'm asking for what the law says I'm owed. And I'm walking in there ready to prove it."
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     STORY PAGE 3 — Going to HR
+══════════════════════════════════════════ -->
+<div class="page story-page theme-teal">
+  <div class="story-header">
+    <div class="story-chap">Maya's Story · Chapter 3</div>
+    <div class="story-title">The HR<br>Meeting She<br>Ran Herself</div>
+  </div>
+  <div class="story-body">
+    <div class="scene-block">
+      <div class="scene-label">Scene · HR Office · Thursday 2pm</div>
+      <div class="scene-text">
+        Maya came with a printed folder — two copies of everything. She was calm, specific, and did not apologize for being there.
+      </div>
+    </div>
+    <div class="dialogue">
+      <span class="speaker">Maya</span>
+      "Colleagues in the same role are earning significantly more. I'd like the basis for that difference in writing."
+    </div>
+    <div class="scene-text">
+      The HR manager suggested "negotiation differences." Maya cited the Equal Pay Act: the employer must show the gap is based on seniority, merit, or a factor other than sex.
+    </div>
+    <div class="callout-box pink">
+      <div class="cb-title">🛡️ HR Works for the Company</div>
+      <div class="cb-body">Always document everything. Follow up every conversation with an email summary. Never sign anything without reviewing it first.</div>
+    </div>
+    <div class="scene-text">
+      That afternoon she sent a follow-up email summarizing the discussion, her documentation, and a formal request for a written response. She also filed a preliminary inquiry with the city labor office and the EEOC — a protective measure that timestamps her complaint.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     STORY PAGE 4 — Outcome & Resolution
+══════════════════════════════════════════ -->
+<div class="page story-page theme-ink">
+  <div class="story-header">
+    <div class="story-chap">Maya's Story · Chapter 4</div>
+    <div class="story-title">What<br>Happened<br>Next</div>
+  </div>
+  <div class="story-body">
+    <div class="scene-block">
+      <div class="scene-label">Three Weeks Later</div>
+      <div class="scene-text">
+        The city's Pay Transparency audit, triggered by Maya's filing, found Nexum had failed to post salary ranges — a separate violation increasing pressure to settle.
+      </div>
+    </div>
+    <div class="stat-bar">
+      <div class="stat-eyebrow">Maya's Resolution</div>
+      <div class="stat-num">Back Pay + Raise</div>
+      <div class="stat-desc">Salary adjustment to parity, two years of retroactive back pay, and a company-wide policy review — all before any lawsuit was filed.</div>
+    </div>
+    <div class="scene-text">
+      Maya shared her experience with two other women of color on her team. Within six months, three more pay equity investigations were opened at Nexum.
+    </div>
+    <div class="dialogue">
+      <span class="speaker">Maya</span>
+      "The law was already on my side — I just had to learn it well enough to use it."
+    </div>
+    <div class="divider"></div>
+    <div class="callout-box teal">
+      <div class="cb-title">📋 Your Steps If This Happens to You</div>
+      <div class="cb-body">
+        <strong>1.</strong> Document everything off company devices.<br>
+        <strong>2.</strong> Research your local laws — city and state often go further than federal.<br>
+        <strong>3.</strong> Request an HR meeting in writing; follow up with an email summary.<br>
+        <strong>4.</strong> File with the EEOC (eeoc.gov) and your city labor office.<br>
+        <strong>5.</strong> Consult an employment attorney — many offer free consultations.<br>
+        <strong>6.</strong> Don't sign anything without reviewing it with an attorney first.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BACK COVER — Resources
+══════════════════════════════════════════ -->
+<div class="page back-cover">
+  <div class="section-eyebrow" style="color:var(--teal); font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase;">You Are Not Alone</div>
+  <div class="back-title">Where to <span>Go</span><br>for Help</div>
+
+  <div class="resource-grid">
+    <div class="resource-card fc">
+      <div class="rc-icon">⚖️</div>
+      <div class="rc-title">EEOC</div>
+      <div class="rc-body">File federal complaints for pay, race, and sex discrimination.<br><strong style="color:#fff">eeoc.gov · 1-800-669-4000</strong></div>
+    </div>
+    <div class="resource-card gc">
+      <div class="rc-icon">💼</div>
+      <div class="rc-title">National Women's Law Center</div>
+      <div class="rc-body">Legal resources, attorney referrals, and advocacy for workplace equity.<br><strong>nwlc.org</strong></div>
+    </div>
+    <div class="resource-card tc">
+      <div class="rc-icon">✊</div>
+      <div class="rc-title">NAACP Legal Defense Fund</div>
+      <div class="rc-body">Legal support for racial discrimination in the workplace.<br><strong>naacpldf.org</strong></div>
+    </div>
+    <div class="resource-card lc">
+      <div class="rc-icon">📋</div>
+      <div class="rc-title">Your City Labor Office</div>
+      <div class="rc-body">Search "[your city] + Office of Labor Standards" for local pay transparency enforcement.</div>
+    </div>
+  </div>
+
+  <div class="callout-box teal" style="background:#0d3d39; border-color:var(--teal);">
+    <div class="cb-title" style="color:var(--teal);">💡 Remember</div>
+    <div class="cb-body" style="color:#ccc;">It is illegal for your employer to retaliate against you for filing a complaint, discussing wages, or supporting someone else's complaint. Retaliation is a separate violation — and a separate case.</div>
+  </div>
+
+  <div class="back-mantra">
+    Knowing your rights<br>
+    <span>is the first act</span><br>
+    of resistance.
+  </div>
+
+  <div class="back-footer">EQUAL RIGHTS ZINE · Issue No. 01 · Know Your Rights · For Educational Purposes · Share Freely</div>
+</div>
+
+</body>
+</html>
